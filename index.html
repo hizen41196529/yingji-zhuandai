@@ -326,10 +326,14 @@
 
             var html = '';
             // 按批次降序排列，未知批次放最后
+            var cnNum = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12,'十三':13,'十四':14};
+            function batchNum(b) {
+                if (!b || b.indexOf('第') !== 0 || b.indexOf('未知') === 0) return 0;
+                var n = b.replace(/第|批/g, '');
+                return cnNum[n] || 0;
+            }
             var sorted = rows.slice().sort(function(a, b) {
-                var na = (a.batch && a.batch.indexOf('第') === 0) ? parseInt(a.batch.replace(/[^0-9]/g, '')) : 0;
-                var nb = (b.batch && b.batch.indexOf('第') === 0) ? parseInt(b.batch.replace(/[^0-9]/g, '')) : 0;
-                return nb - na;
+                return batchNum(b.batch) - batchNum(a.batch);
             });
             sorted.forEach(function(r) {
                 var isCanceled = r.cancel_date && r.cancel_date !== '-';
